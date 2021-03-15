@@ -1,70 +1,80 @@
 #include "./GUI/Simple_window.h"
 #include "./GUI/Graph.h"
 
-double one(double) { return 1; }
-double square(double x) { return x*x; }
 
-int main()
-try{
+int main(){
+	
 	using namespace Graph_lib;
-
-    int xmax = 600;
-    int ymax = 400;
-
-    int xorig = xmax/2;
-    int yorig = ymax/2;
-
-    int rmin = -10;
-    int rmax = 10;
-
-    int n_points = 1000;
-
-    Simple_window win {Point{100,100}, xmax, ymax, "My window"};
-
-    Point origo {xorig, yorig};
-
-    int xlength = xmax - 40;
-	int ylength = ymax - 40;
-
-	int xscale = 30, yscale = 30;
-
-	Axis x{Axis::x, Point{20, yorig}, xlength, xlength/xscale, "x "};
-	Axis y{Axis::y, Point{xorig, ylength+20}, ylength, ylength/yscale, "y "};
-	y.set_color(Color::cyan);
-	y.label.set_color(Color::red);
-	Function s (one, rmin, rmax, origo, n_points, xscale, yscale);
-	Function sq (square, rmin, rmax, origo, n_points, xscale, yscale);
-	Function sine{sin,0,100,origo,1000,40,40};
-	sine.set_color(Color::yellow);
-
-	Polygon poly;
-	poly.add(origo);
-	poly.add(Point{400,300});
-	poly.add(Point{100,150});
-	poly.set_color(Color::dark_green);
-	poly.set_style(Line_style::dash);
-	poly.set_fill_color(Color::dark_green);
-
-	Text t{Point{30,100},"Hello, graphical world!"};
-	t.set_font(Font::times_bold);
-	t.set_font_size(20);
-	t.set_color(Color::red);
-
-	Image ii {Point {0,0},"majom.jpg"};
-
-	win.attach(ii);
-	win.attach(t);
-	win.attach(x);
-	win.attach(y);
+	Point tl {100,100};
+	Simple_window win{tl,600,400,"Ablak"};
+	
+	
+	Axis xa {Axis::x, Point{10,300}, 280, 10, "x axis"}; 
+	win.attach(xa);                                             
+	     
+	
+	
+	Axis ya {Axis::y, Point{20,290}, 280, 10, "y axis"};
+	ya.set_color(Color::cyan);  
+	ya.label.set_color(Color::dark_red);      
+	win.attach(ya);
+	
+	Function sine {sin,0,110,Point{20,150},1000,50,50};           
 	win.attach(sine);
+	
+	sine.set_color(Color::blue);     
+	Polygon poly;                           
+	poly.add(Point{300,200});      
+	poly.add(Point{350,100});
+	poly.add(Point{400,200});
+	poly.set_color(Color::blue);
+	poly.set_style(Line_style::dash);
 	win.attach(poly);
-    win.wait_for_button();
-}
-catch(exception& e){
-	cerr <<"exception: " << e.what() << '\n';
-	return 1;
-}
-catch(...){
-	cerr <<"error\n";
-	return 2;
+	
+	Rectangle r {Point{220,220}, 100, 50};      
+	win.attach(r); 
+	
+	
+	Closed_polyline poly_rect;
+	poly_rect.add(Point{150,50});
+	poly_rect.add(Point{200,50});
+	poly_rect.add(Point{200,100});
+	poly_rect.add(Point{100,100});
+	poly_rect.add(Point{50,75});
+	win.attach(poly_rect);
+	
+	
+	r.set_fill_color(Color::red);       
+	poly.set_style(Line_style(Line_style::dash,4)); 
+	poly_rect.set_style(Line_style(Line_style::dash,2));
+	poly_rect.set_fill_color(Color::green);
+	
+	
+	Text t {Point{150,150}, "Hello, graphical world!"};
+	win.attach(t);
+	t.set_font(FL_COURIER_BOLD);
+	t.set_font_size(20);
+	
+	
+	Image ii {Point{220,350},"majom.jpg"};
+	win.attach(ii);
+	
+	
+	Circle c {Point{150,200},50};
+	Ellipse e {Point{100,200}, 75,25};
+	e.set_color(Color::dark_red);
+	Mark m {Point{150,200},'x'};
+	ostringstream oss;
+	oss << "screen size: " << x_max() << "*" << y_max()
+	          << "; window size: " << win.x_max() << "*" << win.y_max();
+	Text sizes {Point{100,20},oss.str()};
+	win.attach(c);
+	win.attach(m);
+	
+	
+	
+	
+	win.wait_for_button();
+
+	return 0;
 }
